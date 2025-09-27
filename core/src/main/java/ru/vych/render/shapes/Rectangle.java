@@ -21,7 +21,7 @@ public class Rectangle implements Drawable {
     private final Texture texture;
     private final ShaderProgram shaderProgram;
 
-    private float[] vertexArray = {
+    private float[] vertexArray11 = {
             // position           //color                       // UV cords
             150f, -150f, 0.0f,      1.0f, 0.0f, 0.0f, 1.0f,       1, 1, // [0] bottom right
             -150f, 150f, 0.0f,      0.0f, 1.0f, 0.0f, 1.0f,       0, 0, // [1] top left
