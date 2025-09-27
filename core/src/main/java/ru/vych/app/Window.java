@@ -18,6 +18,7 @@ import ru.vych.util.Time;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -94,6 +95,11 @@ public class Window {
         GLFW.glfwSetScrollCallback(window, MouseListener::mouseScrollCallback);
         GLFW.glfwSetKeyCallback(window, KeyboardListener::keyCallback);
 
+        GLFW.glfwSetWindowSizeCallback(window, (_window, width, height) -> {
+            glViewport(0, 0, width, height);
+            SceneManager.getCurrentScene().adjustProjection(width, height);
+        });
+
         try (MemoryStack stack = stackPush()) {
             if (config.isCenteredOnCreate()) {
                 IntBuffer pWidth = stack.mallocInt(1);
@@ -123,10 +129,10 @@ public class Window {
         GL.createCapabilities();
 
         var beginTime = Time.getTimeSecond();
-        double endTime;
-        double deltaTime = -1;
+        float endTime;
+        float deltaTime = -1;
 
-        SceneManager.loadScene(config.getStartScene());
+        SceneManager.loadScene(config.getStartScene()).adjustProjection(config.getWidth(), config.getHeight());
 
         while (!GLFW.glfwWindowShouldClose(window)) {
             glfwPollEvents();
@@ -140,7 +146,7 @@ public class Window {
             MouseListener.endFrame();
 
             endTime = Time.getTimeSecond();
-            deltaTime = endTime-beginTime;
+            deltaTime = endTime - beginTime;
             beginTime = endTime;
         }
     }

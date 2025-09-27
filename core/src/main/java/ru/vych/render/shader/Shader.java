@@ -18,6 +18,9 @@ import static org.lwjgl.opengl.GL20.*;
  */
 @RequiredArgsConstructor
 public class Shader {
+    public static final String DEFAULT_VERTEX_SHADER_SOURCE = "core/assets/shaders/default/default_vertex.glsl";
+    public static final String DEFAULT_FRAGMENT_SHADER_SOURCE = "core/assets/shaders/default/default_fragment.glsl";
+
     private static final Logger log = LoggerFactory.getLogger(Shader.class);
 
     private final int shaderType;
@@ -26,6 +29,14 @@ public class Shader {
 
     private int shaderId;
     private boolean compiled = false;
+
+    public static Shader getDefaultVertex() {
+        return new Shader(GL_VERTEX_SHADER, DEFAULT_VERTEX_SHADER_SOURCE);
+    }
+
+    public static Shader getDefaultFragment() {
+        return new Shader(GL_FRAGMENT_SHADER, DEFAULT_FRAGMENT_SHADER_SOURCE);
+    }
 
     /**
      * Получение id шейдера.

@@ -1,6 +1,7 @@
 package ru.vych.render.shapes;
 
 import org.lwjgl.BufferUtils;
+import ru.vych.render.camera.Camera;
 import ru.vych.render.shader.ShaderProgram;
 
 import java.nio.FloatBuffer;
@@ -19,11 +20,11 @@ public class Rectangle implements Drawable {
     private final ShaderProgram shaderProgram;
 
     private float[] vertexArray = {
-            // position             //color
-            0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // [0] bottom right
-            -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // [1] top left
-            0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, // [2] top right
-            -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // [3] bottom left
+            // position           //color                       // UV cords
+            50f, -50f, 0.0f,      1.0f, 0.0f, 0.0f, 1.0f,       1, 0, // [0] bottom right
+            -50f, 50f, 0.0f,      0.0f, 1.0f, 0.0f, 1.0f,       0, 1, // [1] top left
+            50f, 50f, 0.0f,       0.0f, 0.0f, 1.0f, 1.0f,       1, 1, // [2] top right
+            -50f, -50f, 0.0f,     1.0f, 1.0f, 0.0f, 1.0f,       0, 0, // [3] bottom left
     };
 
     // индексы вершин элементов должны быть перечислены против часовой стрелки
@@ -56,17 +57,13 @@ public class Rectangle implements Drawable {
     }
 
     @Override
-    public void draw(double deltaTime) {
-        glUseProgram(shaderProgram.getShaderProgram());
+    public void draw(double deltaTime, Camera camera) {
+        shaderProgram.use(camera.getProjectionMatrix(), camera.getViewMatrix());
+
         glBindVertexArray(vaoId);
-
-        shaderProgram.bindAttributes();
-
         glDrawElements(GL_TRIANGLES, elementArray.length, GL_UNSIGNED_INT, 0);
 
-        shaderProgram.unbindAttributes();
-
         glBindVertexArray(0);
-        glUseProgram(0);
+        shaderProgram.free();
     }
 }
