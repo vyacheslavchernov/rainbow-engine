@@ -1,19 +1,14 @@
 package ru.vych.scene;
 
-import org.lwjgl.BufferUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.vych.render.shader.Shader;
 import ru.vych.render.shader.ShaderAttribute;
 import ru.vych.render.shader.ShaderProgram;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 /**
  * Абстрактная сцена.
@@ -28,7 +23,8 @@ public abstract class Scene {
     protected ShaderProgram shaderProgram;
 
 
-    public Scene() {}
+    public Scene() {
+    }
 
     /**
      * Метод инициализации сцены.
@@ -57,7 +53,8 @@ public abstract class Scene {
      *
      * @param deltaTime время обработки предыдущего кадра
      */
-    public void update(double deltaTime) {}
+    public void update(double deltaTime) {
+    }
 
     /**
      * Метод отрисовки сцены.
@@ -68,7 +65,8 @@ public abstract class Scene {
      *
      * @param deltaTime время обработки предыдущего кадра
      */
-    public void draw(double deltaTime) {}
+    public void draw(double deltaTime) {
+    }
 
     /**
      * Метод выгрузки ресурсов сцены.
@@ -79,5 +77,6 @@ public abstract class Scene {
      * Вызывается у выгружаемой сцены во время смены сцены
      * и при закрытии приложения, если сцена активна.
      */
-    public void unload() {}
+    public void unload() {
+    }
 }

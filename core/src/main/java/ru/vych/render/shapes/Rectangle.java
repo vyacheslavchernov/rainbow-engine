@@ -20,10 +20,10 @@ public class Rectangle implements Drawable {
 
     private float[] vertexArray = {
             // position             //color
-            0.5f, -0.5f, 0.0f,      1.0f, 0.0f, 0.0f, 1.0f, // [0] bottom right
-            -0.5f, 0.5f, 0.0f,      0.0f, 1.0f, 0.0f, 1.0f, // [1] top left
-            0.5f, 0.5f, 0.0f,       0.0f, 0.0f, 1.0f, 1.0f, // [2] top right
-            -0.5f, -0.5f, 0.0f,     1.0f, 1.0f, 0.0f, 1.0f, // [3] bottom left
+            0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // [0] bottom right
+            -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // [1] top left
+            0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, // [2] top right
+            -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, // [3] bottom left
     };
 
     // индексы вершин элементов должны быть перечислены против часовой стрелки
