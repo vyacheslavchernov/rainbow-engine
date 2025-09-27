@@ -15,6 +15,11 @@ public class Camera {
     @Getter
     private final Vector2f position;
 
+    @Getter
+    private float viewWidth;
+    @Getter
+    private float viewHeight;
+
     public Camera(Vector2f position) {
         this.position = position;
         projectionMatrix = new Matrix4f();
@@ -28,6 +33,8 @@ public class Camera {
     public void adjustProjection(float width, float height, float nearClip, float farClip) {
         projectionMatrix.identity();
         projectionMatrix.ortho(0, width, 0, height, nearClip, farClip);
+        viewWidth = width;
+        viewHeight = height;
     }
 
     public Matrix4f getViewMatrix() {
@@ -42,5 +49,10 @@ public class Camera {
         );
 
         return viewMatrix;
+    }
+
+    public void centerCameraInViewOrigin() {
+        position.x = -viewWidth/2;
+        position.y = -viewHeight/2;
     }
 }

@@ -15,8 +15,6 @@ public class MainScene extends Scene {
     @Override
     public void update(double deltaTime) {
         super.update(deltaTime);
-        camera.getPosition().x -= (float) (deltaTime * 50f);
-        camera.getPosition().y -= (float) (deltaTime * 50f);
     }
 
     @Override

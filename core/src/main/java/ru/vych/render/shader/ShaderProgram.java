@@ -5,6 +5,7 @@ import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.vych.render.Texture;
 
 import java.nio.FloatBuffer;
 import java.util.Arrays;
@@ -113,6 +114,12 @@ public class ShaderProgram {
         }
     }
 
+    public void bindTexture(Texture texture, int slot) {
+        uploadTexture("uTexSampler", slot);
+        glActiveTexture(slot);
+        texture.bind();
+    }
+
     public void uploadMat4f(String varName, Matrix4f mat4f) {
         checkBeingUse();
         var location = glGetUniformLocation(shaderProgramId, varName);
@@ -157,6 +164,12 @@ public class ShaderProgram {
         checkBeingUse();
         var location = glGetUniformLocation(shaderProgramId, varName);
         glUniform1i(location, val);
+    }
+
+    public void uploadTexture(String varName, int slot) {
+        checkBeingUse();
+        var location = glGetUniformLocation(shaderProgramId, varName);
+        glUniform1i(location, slot);
     }
 
     private void checkBeingUse() {
