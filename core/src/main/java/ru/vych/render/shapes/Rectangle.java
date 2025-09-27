@@ -1,6 +1,7 @@
 package ru.vych.render.shapes;
 
 import org.lwjgl.BufferUtils;
+import ru.vych.render.Texture;
 import ru.vych.render.camera.Camera;
 import ru.vych.render.shader.ShaderProgram;
 
@@ -17,14 +18,15 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  * который может быть отрисован на экране.
  */
 public class Rectangle implements Drawable {
+    private final Texture texture;
     private final ShaderProgram shaderProgram;
 
     private float[] vertexArray = {
             // position           //color                       // UV cords
-            50f, -50f, 0.0f,      1.0f, 0.0f, 0.0f, 1.0f,       1, 0, // [0] bottom right
-            -50f, 50f, 0.0f,      0.0f, 1.0f, 0.0f, 1.0f,       0, 1, // [1] top left
-            50f, 50f, 0.0f,       0.0f, 0.0f, 1.0f, 1.0f,       1, 1, // [2] top right
-            -50f, -50f, 0.0f,     1.0f, 1.0f, 0.0f, 1.0f,       0, 0, // [3] bottom left
+            150f, -150f, 0.0f,      1.0f, 0.0f, 0.0f, 1.0f,       1, 1, // [0] bottom right
+            -150f, 150f, 0.0f,      0.0f, 1.0f, 0.0f, 1.0f,       0, 0, // [1] top left
+            150f, 150f, 0.0f,       0.0f, 0.0f, 1.0f, 1.0f,       1, 0, // [2] top right
+            -150f, -150f, 0.0f,     1.0f, 1.0f, 0.0f, 1.0f,       0, 1, // [3] bottom left
     };
 
     // индексы вершин элементов должны быть перечислены против часовой стрелки
@@ -37,6 +39,7 @@ public class Rectangle implements Drawable {
 
     public Rectangle(ShaderProgram shaderProgram) {
         this.shaderProgram = shaderProgram;
+        this.texture = Texture.getDefault();
 
         vaoId = glGenVertexArrays();
         glBindVertexArray(vaoId);
@@ -59,6 +62,8 @@ public class Rectangle implements Drawable {
     @Override
     public void draw(double deltaTime, Camera camera) {
         shaderProgram.use(camera.getProjectionMatrix(), camera.getViewMatrix());
+
+        shaderProgram.bindTexture(texture, 0);
 
         glBindVertexArray(vaoId);
         glDrawElements(GL_TRIANGLES, elementArray.length, GL_UNSIGNED_INT, 0);

@@ -1,5 +1,6 @@
 package ru.vych.scene;
 
+import lombok.Getter;
 import org.joml.Vector2f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ public abstract class Scene {
     protected static final Logger log = LoggerFactory.getLogger(Scene.class);
 
     protected ShaderProgram shaderProgram;
+    @Getter
     protected Camera camera;
 
 

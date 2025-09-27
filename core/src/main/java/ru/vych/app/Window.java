@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.vych.input.KeyboardListener;
 import ru.vych.input.MouseListener;
+import ru.vych.scene.Scene;
 import ru.vych.scene.SceneManager;
 import ru.vych.util.Time;
 
@@ -132,11 +133,13 @@ public class Window {
         float endTime;
         float deltaTime = -1;
 
-        SceneManager.loadScene(config.getStartScene()).adjustProjection(config.getWidth(), config.getHeight());
+        Scene scene = SceneManager.loadScene(config.getStartScene());
+        scene.adjustProjection(config.getWidth(), config.getHeight());
+        scene.getCamera().centerCameraInViewOrigin();
 
         while (!GLFW.glfwWindowShouldClose(window)) {
             glfwPollEvents();
-            var scene = SceneManager.getCurrentScene();
+            scene = SceneManager.getCurrentScene();
             scene.update(deltaTime);
 
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
