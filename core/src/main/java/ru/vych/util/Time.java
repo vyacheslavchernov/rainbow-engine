@@ -10,19 +10,19 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class Time {
     @Getter
-    private final double timeStarted = System.nanoTime();
+    private final float timeStarted = System.nanoTime();
 
     /**
      * @return время прошедшее с момента запуска приложения в наносекундах
      */
-    public double getTimeNano() {
+    public float getTimeNano() {
         return System.nanoTime() - timeStarted;
     }
 
     /**
      * @return время прошедшее с момента запуска приложения в секундах
      */
-    public double getTimeSecond() {
-        return getTimeNano() * 1E-9;
+    public float getTimeSecond() {
+        return (float) (getTimeNano() * 1E-9);
     }
 }

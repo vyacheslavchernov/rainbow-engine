@@ -1,9 +1,12 @@
 package ru.vych.render.shader;
 
 import lombok.Getter;
+import org.joml.*;
+import org.lwjgl.BufferUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,14 +18,28 @@ import static org.lwjgl.opengl.GL20.*;
  */
 @Getter
 public class ShaderProgram {
-    public static final int FLOAT_SIZE_BYTES = 4;
+    public static final int FLOAT_SIZE_BYTES = Float.BYTES;
 
     private static final Logger log = LoggerFactory.getLogger(ShaderProgram.class);
 
-    private final int shaderProgram;
+    private final int shaderProgramId;
     private final List<ShaderAttribute> shaderAttributes;
 
     private final int shaderVertexSizeBytes;
+
+    @Getter
+    private boolean beingUse = false;
+
+    public static ShaderProgram getDefault() {
+        return new ShaderProgram(
+                List.of(
+                        new ShaderAttribute(3, GL_FLOAT),
+                        new ShaderAttribute(4, GL_FLOAT),
+                        new ShaderAttribute(2, GL_FLOAT)
+                ),
+                Shader.getDefaultVertex(), Shader.getDefaultFragment()
+        );
+    }
 
     public ShaderProgram(List<ShaderAttribute> shaderAttributes, Shader... shaders) {
         this.shaderAttributes = shaderAttributes;
@@ -30,28 +47,45 @@ public class ShaderProgram {
                 .mapToInt(ShaderAttribute::getAttrSize).sum() * FLOAT_SIZE_BYTES;
 
         log.info("Linking shaders to program");
-        shaderProgram = glCreateProgram();
+        shaderProgramId = glCreateProgram();
         Arrays.stream(shaders).forEach((shader -> {
             log.info("Link shader {} to program", shader.getShaderSource());
-            glAttachShader(shaderProgram, shader.getShaderId());
+            glAttachShader(shaderProgramId, shader.getShaderId());
         }));
-        glLinkProgram(shaderProgram);
+        glLinkProgram(shaderProgramId);
 
-        var success = glGetProgrami(shaderProgram, GL_LINK_STATUS);
+        var success = glGetProgrami(shaderProgramId, GL_LINK_STATUS);
         if (success == GL_FALSE) {
-            var len = glGetProgrami(shaderProgram, GL_INFO_LOG_LENGTH);
+            var len = glGetProgrami(shaderProgramId, GL_INFO_LOG_LENGTH);
             throw new IllegalStateException(
                     String.format("Error while linking shaders - %s",
-                            glGetProgramInfoLog(shaderProgram, len))
+                            glGetProgramInfoLog(shaderProgramId, len))
             );
         } else {
             log.info("Shaders linked in program");
         }
     }
 
+    public void use(Matrix4f projection, Matrix4f view) {
+        if (!beingUse) {
+            beingUse = true;
+            glUseProgram(shaderProgramId);
+            uploadMat4f("uProj", projection);
+            uploadMat4f("uView", view);
+            bindAttributes();
+        }
+    }
+
+    public void free() {
+        unbindAttributes();
+        glUseProgram(0);
+        beingUse = false;
+    }
+
     /**
      * Забиндить аттрибуты шейдеров.
-     * Необходимо вызывать в начале метода отрисовки {@link ru.vych.render.shapes.Drawable#draw(double)}
+     * Необходимо вызывать в начале метода отрисовки
+     * {@link ru.vych.render.shapes.Drawable#draw(double, ru.vych.render.camera.Camera)}
      */
     public void bindAttributes() {
         int index = 0;
@@ -70,11 +104,66 @@ public class ShaderProgram {
 
     /**
      * Разбиндить аттрибуты шейдеров.
-     * Необходимо вызывать в конце метода отрисовки {@link ru.vych.render.shapes.Drawable#draw(double)}
+     * Необходимо вызывать в конце метода отрисовки
+     * {@link ru.vych.render.shapes.Drawable#draw(double, ru.vych.render.camera.Camera)}
      */
     public void unbindAttributes() {
         for (int i = 0; i < shaderAttributes.size(); i++) {
             glDisableVertexAttribArray(i);
+        }
+    }
+
+    public void uploadMat4f(String varName, Matrix4f mat4f) {
+        checkBeingUse();
+        var location = glGetUniformLocation(shaderProgramId, varName);
+        FloatBuffer matBuffer = BufferUtils.createFloatBuffer(16);
+        mat4f.get(matBuffer);
+        glUniformMatrix4fv(location, false, matBuffer);
+    }
+
+    public void uploadMat3f(String varName, Matrix3f mat3f) {
+        checkBeingUse();
+        var location = glGetUniformLocation(shaderProgramId, varName);
+        FloatBuffer matBuffer = BufferUtils.createFloatBuffer(9);
+        mat3f.get(matBuffer);
+        glUniformMatrix3fv(location, false, matBuffer);
+    }
+
+    public void uploadVec4f(String varName, Vector4f vec) {
+        checkBeingUse();
+        var location = glGetUniformLocation(shaderProgramId, varName);
+        glUniform4f(location, vec.x, vec.y, vec.z, vec.w);
+    }
+
+    public void uploadVec3f(String varName, Vector3f vec) {
+        checkBeingUse();
+        var location = glGetUniformLocation(shaderProgramId, varName);
+        glUniform3f(location, vec.x, vec.y, vec.z);
+    }
+
+    public void uploadVec2f(String varName, Vector2f vec) {
+        checkBeingUse();
+        var location = glGetUniformLocation(shaderProgramId, varName);
+        glUniform2f(location, vec.x, vec.y);
+    }
+
+    public void uploadFloat(String varName, float val) {
+        checkBeingUse();
+        var location = glGetUniformLocation(shaderProgramId, varName);
+        glUniform1f(location, val);
+    }
+
+    public void uploadInt(String varName, int val) {
+        checkBeingUse();
+        var location = glGetUniformLocation(shaderProgramId, varName);
+        glUniform1i(location, val);
+    }
+
+    private void checkBeingUse() {
+        if (!beingUse) {
+            throw new IllegalStateException(
+                    "Shader program should be in use for upload variables"
+            );
         }
     }
 }

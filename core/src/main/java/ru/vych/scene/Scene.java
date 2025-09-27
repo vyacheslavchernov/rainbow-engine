@@ -1,14 +1,10 @@
 package ru.vych.scene;
 
+import org.joml.Vector2f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.vych.render.shader.Shader;
-import ru.vych.render.shader.ShaderAttribute;
+import ru.vych.render.camera.Camera;
 import ru.vych.render.shader.ShaderProgram;
-
-import java.util.List;
-
-import static org.lwjgl.opengl.GL20.*;
 
 /**
  * Абстрактная сцена.
@@ -21,6 +17,7 @@ public abstract class Scene {
     protected static final Logger log = LoggerFactory.getLogger(Scene.class);
 
     protected ShaderProgram shaderProgram;
+    protected Camera camera;
 
 
     public Scene() {
@@ -35,14 +32,11 @@ public abstract class Scene {
      */
     public void init() {
         log.info("Init shaders in scene - {}", this.getClass());
-        shaderProgram = new ShaderProgram(
-                List.of(
-                        new ShaderAttribute(3, GL_FLOAT),
-                        new ShaderAttribute(4, GL_FLOAT)
-                ),
-                new Shader(GL_VERTEX_SHADER, "core/assets/shaders/default_vertex.glsl"),
-                new Shader(GL_FRAGMENT_SHADER, "core/assets/shaders/default_fragment.glsl")
-        );
+        shaderProgram = ShaderProgram.getDefault();
+
+        log.info("Creating camera");
+        camera = new Camera(new Vector2f());
+
         log.info("Scene {} initialised", this.getClass());
     }
 
@@ -78,5 +72,13 @@ public abstract class Scene {
      * и при закрытии приложения, если сцена активна.
      */
     public void unload() {
+    }
+
+    public void adjustProjection(float width, float height) {
+        camera.adjustProjection(width, height);
+    }
+
+    public void adjustProjection(float width, float height, float nearClip, float farClip) {
+        camera.adjustProjection(width, height, nearClip, farClip);
     }
 }
