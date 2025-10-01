@@ -12,8 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.vych.input.KeyboardListener;
 import ru.vych.input.MouseListener;
-import ru.vych.scene.Scene;
-import ru.vych.scene.SceneManager;
+import ru.vych.logic.scene.Scene;
+import ru.vych.logic.scene.SceneManager;
 import ru.vych.util.Time;
 
 import java.nio.IntBuffer;
@@ -150,6 +150,7 @@ public class Window {
 
             endTime = Time.getTimeSecond();
             deltaTime = endTime - beginTime;
+//            log.info("deltatime {}, fps {}", deltaTime, 1/deltaTime);
             beginTime = endTime;
         }
     }

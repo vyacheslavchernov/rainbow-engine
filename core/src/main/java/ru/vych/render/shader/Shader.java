@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.vych.resources.AbstractResource;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,7 +18,7 @@ import static org.lwjgl.opengl.GL20.*;
  * Выполняет загрузку и компиляцию шейдера для последующего использования в {@link ShaderProgram}
  */
 @RequiredArgsConstructor
-public class Shader {
+public class Shader extends AbstractResource {
     public static final String DEFAULT_VERTEX_SHADER_SOURCE = "core/assets/shaders/default/default_vertex.glsl";
     public static final String DEFAULT_FRAGMENT_SHADER_SOURCE = "core/assets/shaders/default/default_fragment.glsl";
 
@@ -47,7 +48,7 @@ public class Shader {
      */
     public int getShaderId() {
         if (!compiled) {
-            compileShader();
+            load();
         }
         return shaderId;
     }
@@ -56,7 +57,8 @@ public class Shader {
      * Скомпилировать шейдер.
      */
     @SneakyThrows
-    public void compileShader() {
+    @Override
+    public void load() {
         log.info("Try to compile shader \"{}\" of {} type", shaderSource, shaderType);
 
         shaderId = glCreateShader(shaderType);

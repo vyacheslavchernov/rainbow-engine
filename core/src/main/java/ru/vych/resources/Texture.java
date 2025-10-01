@@ -1,4 +1,4 @@
-package ru.vych.render;
+package ru.vych.resources;
 
 import lombok.Getter;
 import org.lwjgl.BufferUtils;
@@ -11,19 +11,21 @@ import static org.lwjgl.stb.STBImage.stbi_image_free;
 import static org.lwjgl.stb.STBImage.stbi_load;
 
 
-public class Texture {
+public class Texture extends AbstractResource implements Bindable {
     public static final String DEFAULT_TEXTURE_SOURCE = "core/assets/textures/grid.png";
 
     private final String source;
-    private final int texId;
+    private int texId;
     @Getter
-    private final IntBuffer width;
+    private IntBuffer width;
     @Getter
-    private final IntBuffer height;
+    private IntBuffer height;
     @Getter
-    private final IntBuffer channels;
+    private IntBuffer channels;
     @Getter
-    private final ByteBuffer image;
+    private ByteBuffer image;
+
+    private boolean loaded = false;
 
     public static Texture getDefault() {
         return new Texture(DEFAULT_TEXTURE_SOURCE);
@@ -31,6 +33,15 @@ public class Texture {
 
     public Texture(String source) {
         this.source = source;
+    }
+
+    @Override
+    public void load() {
+        if (loaded) {
+            log.info("Texture \"{}\" is already loaded", source);
+            return;
+        }
+
         texId = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, texId);
 
@@ -66,12 +77,16 @@ public class Texture {
         }
 
         stbi_image_free(image);
+
+        loaded = true;
     }
 
+    @Override
     public void bind() {
         glBindTexture(GL_TEXTURE_2D, texId);
     }
 
+    @Override
     public void unbind() {
         glBindTexture(GL_TEXTURE_2D, 0);
     }

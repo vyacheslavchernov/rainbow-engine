@@ -1,4 +1,4 @@
-package ru.vych.scene;
+package ru.vych.logic.scene;
 
 import lombok.Getter;
 import lombok.SneakyThrows;

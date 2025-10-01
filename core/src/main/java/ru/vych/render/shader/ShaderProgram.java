@@ -5,7 +5,7 @@ import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.vych.render.Texture;
+import ru.vych.resources.Texture;
 
 import java.nio.FloatBuffer;
 import java.util.Arrays;
@@ -33,11 +33,7 @@ public class ShaderProgram {
 
     public static ShaderProgram getDefault() {
         return new ShaderProgram(
-                List.of(
-                        new ShaderAttribute(3, GL_FLOAT),
-                        new ShaderAttribute(4, GL_FLOAT),
-                        new ShaderAttribute(2, GL_FLOAT)
-                ),
+                ShaderAttribute.getDefault(),
                 Shader.getDefaultVertex(), Shader.getDefaultFragment()
         );
     }

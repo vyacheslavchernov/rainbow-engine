@@ -1,4 +1,4 @@
-package ru.vych.scene;
+package ru.vych.logic.scene;
 
 import lombok.Getter;
 import org.joml.Vector2f;
@@ -33,9 +33,6 @@ public abstract class Scene {
      * @see SceneManager#loadScene(Class)
      */
     public void init() {
-        log.info("Init shaders in scene - {}", this.getClass());
-        shaderProgram = ShaderProgram.getDefault();
-
         log.info("Creating camera");
         camera = new Camera(new Vector2f());
 

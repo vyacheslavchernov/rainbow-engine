@@ -3,8 +3,8 @@ package ru.vych.app;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import ru.vych.scene.EmptyScene;
-import ru.vych.scene.Scene;
+import ru.vych.logic.scene.EmptyScene;
+import ru.vych.logic.scene.Scene;
 
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
 import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
