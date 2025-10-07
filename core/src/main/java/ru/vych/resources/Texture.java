@@ -10,7 +10,6 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.stb.STBImage.stbi_image_free;
 import static org.lwjgl.stb.STBImage.stbi_load;
 
-
 public class Texture extends AbstractResource implements Bindable {
     public static final String DEFAULT_TEXTURE_SOURCE = "core/assets/textures/grid.png";
 
